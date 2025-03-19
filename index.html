@@ -153,23 +153,28 @@ function transform() {
 </script>
 <script>
   document.getElementById("email-form").addEventListener("submit", function(event) {
-    event.preventDefault(); // Prevents default form submission
-    
-    const formData = new FormData(this);
-    
-    fetch("https://hooks.airtable.com/workflows/v1/genericWebhook/appWWw92Q29J21BO3/wfl77Xdfu9VtRuaiw/wtrD1pawC12AniDFG", {
+    event.preventDefault(); // Prevent default form submission
+  
+    const form = this;
+    const formData = new FormData(form);
+  
+    fetch(form.action, {
       method: "POST",
       body: formData
-    }).then(response => {
+    })
+    .then(response => {
       if (response.ok) {
-        window.location.href = "https://v0.dev/"; // Redirect on success
+        // Redirect if there's a hidden redirect field, otherwise fallback
+        const redirectUrl = form.querySelector("input[name='redirect']").value || "https://chatgpt.com/";
+        window.location.href = redirectUrl;
       } else {
         alert("Submission failed. Please try again.");
       }
-    }).catch(error => {
+    })
+    .catch(error => {
       console.error("Error:", error);
     });
   });
-  </script>
+  </script>  
 </body>
 </html>
