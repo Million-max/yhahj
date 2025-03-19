@@ -145,10 +145,7 @@ function transform() {
 </script>
 <script>
   document.getElementById("email-form").addEventListener("submit", function() {
-    // Delay redirection to allow submission to go through
-    setTimeout(function() {
-      window.location.href = "https://www.google.com"; // Change to your redirect page
-    }, 1000); // 1-second delay to allow Airtable to receive the data
+    window.location.href = "https://www.google.com"; // Redirect immediately
   });
   </script>
 </body>
