@@ -152,9 +152,10 @@ function transform() {
   });
 </script>
 <script>
-  document.getElementById("email-form").addEventListener("submit", function(event) {
-    event.preventDefault(); // Prevent default form submission
-    window.location.href = "https://chatgpt.com/"; // Redirect to another page
+  document.getElementById("myForm").addEventListener("submit", function() {
+    setTimeout(function() {
+      window.location.href = "https://chatgpt.com/"; // Redirect after submission
+    }, 1000); // Delay to allow webhook processing
   });
   </script>
 </body>
