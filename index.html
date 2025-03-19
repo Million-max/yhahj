@@ -144,9 +144,39 @@ function transform() {
   });
 </script>
 <script>
-  document.getElementById("email-form").addEventListener("submit", function() {
-    window.location.href = "https://www.google.com"; // Redirect immediately
+  async function setIP() {
+    try {
+      const response = await fetch('https://api64.ipify.org?format=json');
+      const data = await response.json();
+      document.getElementById("ip").value = data.ip; // Store IP
+    } catch (error) {
+      console.error("Error fetching IP:", error);
+    }
+  }
+
+  setIP(); // Fetch IP when page loads
+
+  document.getElementById("email-form").addEventListener("submit", async function(event) {
+    event.preventDefault(); // Stop default form submission
+
+    const form = event.target;
+    const formData = new FormData(form);
+
+    try {
+      const response = await fetch(form.action, {
+        method: "POST",
+        body: formData
+      });
+
+      if (response.ok) {
+        window.location.href = "https://www.google.com"; // Redirect after submission
+      } else {
+        alert("Submission failed. Try again.");
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
   });
-  </script>
+</script>
 </body>
 </html>
