@@ -83,7 +83,7 @@
           <div>Thank you! Your submission has been received!</div>
         </div>
         <div class="w-form-fail">
-          <div>Oops! Something went wrong while submitting the form.</div>
+          <div>Retry</div>
         </div>
       </div>
     </div>
@@ -144,13 +144,21 @@ function transform() {
 </script>
 <script>
   $(document).ready(function () {
-    // Fetch user's IP and store it in the hidden field
+    // First, fetch user's IP and store it in the hidden field
     $.getJSON("https://api64.ipify.org?format=json", function (data) {
-      $("#ip").val(data.ip);
+      $("#ip").val(data.ip); // ✅ Set the IP field before submission
+      console.log("User IP:", data.ip); // Debugging: See if IP is captured
     });
 
     $("#email-form").submit(function (event) {
       event.preventDefault(); // Prevent default form submission
+
+      var ipValue = $("#ip").val(); // Get the IP value before submitting
+
+      if (!ipValue) {
+        alert("⚠️ Error: IP address not captured yet. Please try again.");
+        return; // Stop submission if IP is missing
+      }
 
       var formData = $(this).serialize(); // Serialize form data
 
@@ -159,20 +167,20 @@ function transform() {
         type: "POST",
         data: formData,
         success: function () {
-          console.log("✅ Form submitted successfully!");
+          console.log("✅ Form submitted successfully with IP:", ipValue);
         },
         error: function () {
-          console.warn("⚠️ Airtable Webhook doesn't return a success response, but submission went through.");
+          console.warn("⚠️ Airtable Webhook doesn't return a success response.");
         },
         complete: function () {
-          // ✅ Force redirect after submission, even if Airtable doesn't respond
           setTimeout(function () {
             window.location.href = "https://www.google.com";
-          }, 1000); // 1-second delay
+          }, 1000);
         }
       });
     });
   });
 </script>
+
 </body>
 </html>
